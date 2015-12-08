@@ -28,3 +28,16 @@ class WwwExpansysComSgCrawler(CrawlSpider):
         item['sku'] = sel.xpath('@data-newprodid').extract()
         print item
         yield item
+        
+    def parse_articles_follow_next_page(self, response):
+    for article in response.xpath("//article"):
+        item = ArticleItem()
+
+        ... extract article data here
+
+        yield item
+
+    next_page = response.css("ul.navigation > li.next-page > a::attr('href')")
+    if next_page:
+        url = response.urljoin(next_page[0].extract())
+        yield scrapy.Request(url, self.parse_articles_follow_next_page)
