@@ -21,7 +21,6 @@ class WwwExpansysComSgCrawler(CrawlSpider):
     )
 
     def parse_item(self, response):
-      list1=[]
       for sel in response.xpath('//div[@id = "product"]'):
         item = SpiderPracticeItem()
         item['title'] = sel.xpath('//div[@id="title"]/h1/text()').extract()
