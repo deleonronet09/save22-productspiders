@@ -18,7 +18,7 @@ class SpiderPracticeItem(scrapy.Item):
     sku = scrapy.Field()
     upc = scrapy.Field()
     ean = scrapy.Field()
-    currenct = scrapy.Field()
+    currency = scrapy.Field()
     price = scrapy.Field()
     crawl_time = scrapy.Field()
     promo_price = scrapy.Field()
