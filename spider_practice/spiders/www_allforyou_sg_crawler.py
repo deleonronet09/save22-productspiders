@@ -15,8 +15,14 @@ class WwwExpansysComSgCrawler(CrawlSpider):
 
     rules = (
     
-    Rule(LinkExtractor(allow = (r'allforyou.sg/',r'allforyou.sg/.+pagenumber=\d')),callback = 'parse_dir_contents',follow = True),
+    Rule(LinkExtractor(allow = (r'.+/',)),callback = 'parse_dir_contents',follow = True),
     
+    )
+    
+    rules = (
+    
+    Rule(LinkExtractor(allow = (r'.+/.+pagenumber=\d',)),callback = 'parse_dir_contents',follow = True),
+
     )
     listSku=[]
     def parse_dir_contents(self, response):
