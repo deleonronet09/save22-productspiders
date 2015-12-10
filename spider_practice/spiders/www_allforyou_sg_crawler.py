@@ -10,34 +10,26 @@ class WwwExpansysComSgCrawler(CrawlSpider):
     name = 'allforyou'
     allowed_domains = ['allforyou.sg']
     start_urls = [
-        'http://www.allforyou.sg/',
+        'https://allforyou.sg/',
     ]
 
-    def parse(self, response):
-      for href in response.xpath('//div[@class="treemenu-level2"]/a/@href'):
-        url = response.urljoin(href.extract())
-        yield scrapy.Request(url, callback=self.parse_dir_contents)
-
+    rules = (
+    
+    Rule(LinkExtractor(allow = (r'allforyou.sg/',r'allforyou.sg/.+pagenumber=\d')),callback = 'parse_dir_contents',follow = True),
+    
+    )
+    listSku=[]
     def parse_dir_contents(self, response):
       for sel in response.xpath('//div[@class="prod-data"]'):
         item = SpiderPracticeItem()
-        item['title'] = sel.xpath('@data-name').extract()
-        item['price'] = sel.xpath('@data-price').extract()
-        item['instock'] = sel.xpath('@data-outofstock').extract()
-        item['image_urls'] = sel.xpath('@data-imgurl').extract()
-        item['sku'] = sel.xpath('@data-newprodid').extract()
-        print item
-        yield item
-        
-    def parse_articles_follow_next_page(self, response):
-    for article in response.xpath("//article"):
-        item = ArticleItem()
+        if sel.xpath('@data-newprodid').extract() not in self.listSku:
+          self.listSku.append(sel.xpath('@data-newprodid').extract())
+          item['title'] = sel.xpath('@data-name').extract()
+          item['price'] = sel.xpath('@data-price').extract()
+          item['instock'] = sel.xpath('@data-outofstock').extract()
+          item['image_urls'] = sel.xpath('@data-imgurl').extract()
+          item['sku'] = sel.xpath('@data-newprodid').extract()
+          yield item
+          
 
-        ... extract article data here
-
-        yield item
-
-    next_page = response.css("ul.navigation > li.next-page > a::attr('href')")
-    if next_page:
-        url = response.urljoin(next_page[0].extract())
-        yield scrapy.Request(url, self.parse_articles_follow_next_page)
+      
